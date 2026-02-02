@@ -1,6 +1,0 @@
-{
-  "watch": ["."],
-  "ignore": ["../Admin", "**/*.jsx", "**/*.tsx"],
-  "ext": "js,json,mjs,cjs",
-  "exec": "node server.js"
-}
