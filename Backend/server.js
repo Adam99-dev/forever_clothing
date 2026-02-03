@@ -14,7 +14,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://forever-clothing-frontend-psi.vercel.app",
+    origin: ["https://forever-clothing-frontend-psi.vercel.app", "https://forever-clothing-admin-three.vercel.app"],
     credentials: true,
   }),
 );
