@@ -7,19 +7,17 @@ import userRouter from "./routes/userRoute.js";
 import productRouter from "./routes/productRoute.js";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
-import cors from "cors";
-
-app.use(cors({
-  origin: "*",
-  credentials: true
-}));
 
 dotenv.config();
 
 const app = express();
-app.use(cors());
 app.use(express.json());
-
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  }),
+);
 const port = process.env.PORT || 5000;
 
 connectDB();
