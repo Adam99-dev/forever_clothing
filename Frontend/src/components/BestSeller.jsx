@@ -2,13 +2,26 @@ import { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "./Title";
 import ProductItem from "../components/ProductItem";
+import ProductItemSkeleton from "../components/ProductItemSkeleton";
+
 function BestSeller() {
   const { products } = useContext(ShopContext);
   const [bestSeller, setBestSeller] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setBestSeller(products.filter((product) => product.bestSeller).slice(0, 5));
+    if (!products.length) return;
+
+    setLoading(true);
+
+    const filtered = products
+      .filter((product) => product?.bestSeller)
+      .slice(0, 5);
+
+    setBestSeller(filtered);
+    setLoading(false);
   }, [products]);
+
   return (
     <div className="my-10">
       <div className="text-center py-8 text-3xl">
@@ -20,15 +33,19 @@ function BestSeller() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-        {bestSeller.map((item, index) => (
-          <ProductItem
-            key={index}
-            id={item._id}
-            image={item.image[0]}
-            name={item.name}
-            price={item.price}
-          />
-        ))}
+        {loading
+          ? Array.from({ length: 5 }).map((_, i) => (
+              <ProductItemSkeleton key={i} />
+            ))
+          : bestSeller.map((item) => (
+              <ProductItem
+                key={item._id}
+                id={item._id}
+                image={item.image[0]}
+                name={item.name}
+                price={item.price}
+              />
+            ))}
       </div>
     </div>
   );
