@@ -3,6 +3,7 @@ import { ShopContext } from "../context/ShopContext";
 import { CircleCheckBig, ChevronRight } from "lucide-react";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
+import ProductItemSkeleton from "../components/ProductItemSkeleton";
 
 function Collection() {
   const { products = [], search } = useContext(ShopContext);
@@ -12,64 +13,51 @@ function Collection() {
   const [subCategories, setSubCategories] = useState([]);
   const [sortType, setSortType] = useState("relevant");
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Helper to toggle array values
   const toggleValue = (value, setter) => {
     setter((prev) =>
       prev.includes(value)
         ? prev.filter((item) => item !== value)
-        : [...prev, value]
+        : [...prev, value],
     );
   };
 
   useEffect(() => {
     if (!products.length) {
       setFilteredProducts([]);
+      setLoading(true);
       return;
     }
 
     let temp = [...products];
 
-    // Gender filter
-    if (genders.length > 0) {
-      temp = temp.filter((product) =>
-        genders.includes(product?.category?.gender?.toLowerCase?.())
+    if (genders.length)
+      temp = temp.filter((p) =>
+        genders.includes(p?.category?.gender?.toLowerCase()),
       );
-    }
 
-    // Sub-category filter
-    if (subCategories.length > 0) {
-      temp = temp.filter((product) =>
-        subCategories.includes(product?.subCategory?.toLowerCase?.())
+    if (subCategories.length)
+      temp = temp.filter((p) =>
+        subCategories.includes(p?.subCategory?.toLowerCase()),
       );
-    }
 
-    // Search filter
-    if (search && search.trim() !== "") {
-      const query = search.toLowerCase();
+    if (search?.trim()) {
+      const q = search.toLowerCase();
       temp = temp.filter(
-        (product) =>
-          product?.name?.toLowerCase().includes(query) ||
-          product?.category?.gender?.toLowerCase().includes(query) ||
-          product?.subCategory?.toLowerCase().includes(query)
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.category.gender.toLowerCase().includes(q) ||
+          p.subCategory.toLowerCase().includes(q),
       );
     }
 
-    // Sorting
-    switch (sortType) {
-      case "low-high":
-        temp = [...temp].sort((a, b) => a.price - b.price);
-        break;
-      case "high-low":
-        temp = [...temp].sort((a, b) => b.price - a.price);
-        break;
-      case "relevant":
-      default:
-        break;
-    }
+    if (sortType === "low-high") temp.sort((a, b) => a.price - b.price);
+    if (sortType === "high-low") temp.sort((a, b) => b.price - a.price);
 
     setFilteredProducts(temp);
-  }, [products, genders, subCategories, sortType, search, products]);
+    setLoading(false);
+  }, [products, genders, subCategories, sortType, search]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 lg:gap-10 pt-8">
@@ -102,7 +90,7 @@ function Collection() {
                   onClick={() => toggleValue(value, setGenders)}
                 >
                   {genders.includes(value) ? (
-                    <CircleCheckBig size={16}/>
+                    <CircleCheckBig size={16} />
                   ) : (
                     <div className="w-4 h-4 border border-gray-400 rounded-sm" />
                   )}
@@ -124,7 +112,7 @@ function Collection() {
                   onClick={() => toggleValue(value, setSubCategories)}
                 >
                   {subCategories.includes(value) ? (
-                    <CircleCheckBig size={16}/>
+                    <CircleCheckBig size={16} />
                   ) : (
                     <div className="w-4 h-4 border border-gray-400 rounded-sm" />
                   )}
@@ -140,7 +128,11 @@ function Collection() {
       <div className="flex-1">
         <div className="flex flex-col gap-4 sm:gap-6 mb-10">
           <div className="flex justify-center">
-            <Title text1="ALL" text2="COLLECTIONS" description={"CHECK OUT ALL THE COLLECTION AVAILABLE"} />
+            <Title
+              text1="ALL"
+              text2="COLLECTIONS"
+              description={"CHECK OUT ALL THE COLLECTION AVAILABLE"}
+            />
           </div>
 
           <div className="flex justify-end items-center gap-4">
@@ -162,7 +154,13 @@ function Collection() {
           </div>
         </div>
 
-        {filteredProducts.length === 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <ProductItemSkeleton key={i} />
+            ))}
+          </div>
+        ) : filteredProducts.length === 0 ? (
           <div className="text-center py-16 text-gray-500">
             No products match your filters.
           </div>

@@ -29,7 +29,7 @@ function Footer() {
             <Link to="/" className="inline-block">
               <div className="flex flex-col items-center">
                 <img
-                  src={assets.light_logo}
+                  src="/light-logo.png"
                   alt="Forever Clothing"
                   className="w-32 h-auto mb-3"
                 />

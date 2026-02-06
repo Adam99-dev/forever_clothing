@@ -30,7 +30,8 @@ function Hero() {
       <div className="w-full sm:w-1/2 min-h-[450px] sm:min-h-[700px] relative">
         <div className="absolute inset-0 md:bg-gradient-to-r from-pink-300 via-transparent to-transparent z-10"></div>
         <img
-          src={assets.hero_image}
+          src="/hero-image.png"
+          loading="lazy"
           alt="Latest Arrivals"
           className={`w-full h-full object-cover object-center transition-all duration-1000`}
         />

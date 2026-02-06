@@ -36,7 +36,7 @@ function Navbar() {
       <Link to="/">
         <div className="flex flex-col items-center">
           <img
-            src={assets.light_logo}
+            src="/light-logo.png"
             alt="Forever Clothing"
             className="w-28"
           />
