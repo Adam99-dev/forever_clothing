@@ -65,13 +65,17 @@ const removeProduct = async (req, res) => {
 
 const listProduct = async (req, res) => {
   try {
-    const products = await productModel.find({});
-    res.json({ success: "true", products });
+    const products = await productModel
+      .find({}, { name: 1, price: 1, image: 1, bestSeller: 1, category: 1, subCategory: 1 })
+      .limit(30)          // 👈 important
+      .lean();            // 👈 fast response
+
+    res.json({ success: true, products });
   } catch (error) {
-    console.log(error);
-    res.json({ success: "false", message: error.message });
+    res.json({ success: false, message: error.message });
   }
 };
+
 
 const singleProduct = async (req, res) => {
   try {
