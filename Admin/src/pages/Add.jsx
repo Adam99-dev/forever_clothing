@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import assets from "../assets/assets";
 import { backendUrl } from "../App";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -87,7 +86,7 @@ function Add({ token }) {
           <label htmlFor="image1">
             <img
               className="w-40 cursor-pointer"
-              src={!image1 ? assets.upload_area : URL.createObjectURL(image1)}
+              src={!image1 ? "./upload_area.jpg" : URL.createObjectURL(image1)}
               alt=""
             />
             <input
@@ -102,7 +101,7 @@ function Add({ token }) {
           <label htmlFor="image2">
             <img
               className="w-40 cursor-pointer"
-              src={!image2 ? assets.upload_area : URL.createObjectURL(image2)}
+              src={!image2 ? "./upload_area.jpg" : URL.createObjectURL(image2)}
               alt=""
             />
             <input
@@ -117,7 +116,7 @@ function Add({ token }) {
           <label htmlFor="image3">
             <img
               className="w-40 cursor-pointer"
-              src={!image3 ? assets.upload_area : URL.createObjectURL(image3)}
+              src={!image3 ? "./upload_area.jpg" : URL.createObjectURL(image3)}
               alt=""
             />
             <input
@@ -132,7 +131,7 @@ function Add({ token }) {
           <label htmlFor="image4">
             <img
               className="w-40 cursor-pointer"
-              src={!image4 ? assets.upload_area : URL.createObjectURL(image4)}
+              src={!image4 ? "./upload_area.jpg" : URL.createObjectURL(image4)}
               alt=""
             />
             <input

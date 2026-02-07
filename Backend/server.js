@@ -13,7 +13,8 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 const allowedOrigins = [
-  "https://forever-clothing-henna.vercel.app"
+  "https://forever-clothing-henna.vercel.app",
+  "http://localhost:5173",
 ];
 
 app.use(cors({

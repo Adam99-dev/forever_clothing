@@ -8,6 +8,7 @@ This project is designed to be production-ready and suitable for real-world use 
 ## 🚀 Tech Stack
 
 ### Frontend
+
 - React.js
 - React Router DOM
 - Tailwind CSS
@@ -17,6 +18,7 @@ This project is designed to be production-ready and suitable for real-world use 
 - Functional Components & Hooks
 
 ### Backend
+
 - Node.js
 - Express.js
 - MongoDB
@@ -24,12 +26,22 @@ This project is designed to be production-ready and suitable for real-world use 
 - JWT Authentication
 - Stripe Payment Gateway
 
+### Admin
+
+- Electron.js
+- Express.js + Node.js
+- MongoDB
+- Mongoose
+- JWT Authentication
+
 ### Database
-- MongoDB Atlas / Local MongoDB
+
+- MongoDB Atlas
 
 ## ✨ Features
 
 ### 👤 User Features
+
 - User authentication (JWT based)
 - Secure login & registration
 - Add to cart functionality
@@ -43,6 +55,8 @@ This project is designed to be production-ready and suitable for real-world use 
 - Context API based global state management
 
 ### 🛠 Admin Panel Features
+
+- Desktop Application for Admins
 - Admin authentication
 - Dashboard overview
 - Add new products
@@ -55,6 +69,7 @@ This project is designed to be production-ready and suitable for real-world use 
 - Product inventory management
 
 ### 🧾 Product Management
+
 - Multiple product images support
 - Dynamic pricing
 - Product categories
@@ -62,6 +77,7 @@ This project is designed to be production-ready and suitable for real-world use 
 - Stock availability handling
 
 ### 💳 Payment System
+
 - Stripe Checkout integration
 - Secure payment flow
 - Order verification after payment
@@ -69,6 +85,7 @@ This project is designed to be production-ready and suitable for real-world use 
 - Support for failed and canceled payments
 
 ### 🎨 UI & Styling
+
 - Fully responsive design
 - Tailwind CSS utility-first styling
 - Lucide Icons for modern iconography
@@ -77,6 +94,7 @@ This project is designed to be production-ready and suitable for real-world use 
 - Mobile-first approach
 
 ## 🧠 State Management
+
 - React Context API
 - Centralized cart management
 - Global user authentication state
@@ -85,32 +103,39 @@ This project is designed to be production-ready and suitable for real-world use 
 ## 📂 Project Structure
 
 ```text
-mern-ecommerce/
-├── client/                     # React frontend
+e_commerce_site/
+├── frontend/                     # React frontend
 │   ├── public/
+|        ├── logos and svgs
 │   └── src/
 │       ├── assets/
 │       ├── components/
 │       ├── context/
-│       ├── hooks/
 │       ├── pages/
-│       ├── services/
-│       ├── utils/
 │       ├── App.jsx
 │       └── main.jsx
-├── server/                     # Node/Express backend
+├── backend/                     # Node/Express backend
 │   ├── config/
 │   ├── controllers/
 │   ├── middleware/
 │   ├── models/
 │   ├── routes/
-│   ├── uploads/               # (if storing images locally)
 │   ├── server.js
+│   └── .env
+├── admin/                     # Node/Express backend
+│   ├── public/
+|        ├── logos and svgs
+│   └── src/
+│       ├── assets/
+│       ├── components/
+│       ├── context/
+│       ├── pages/
+│       ├── App.jsx
+│       └── main.jsx
 │   └── .env
 ├── .gitignore
 └── README.md
 ```
-
 
 ## 🔐 Authentication & Security
 
@@ -145,48 +170,77 @@ mern-ecommerce/
 
 1. **Clone the repository**
 
-   ```bash
+   ````bash
    git clone https://github.com/Adam99-dev/forever_clothing.git
    cd forever_clothing```
 
+   ````
+
 2. **Install dependencies**
 
-  **Backend**
-  ```text
-  cd Backend 
-  npm install
-  ```
-  **Frontend**
-  ```text
-  cd Frontend 
-  npm install
-  ```
+   **Backend**
 
-**Admin**
-```text
-cd Admin 
-npm install
-```
+   ```bash
+   git clone https://github.com/Adam99-dev/forever_clothing.git
+   cd Backend
+   npm install
+   ```
 
-*Start Backend*
-```text
-cd Backend
-npm run s
-```
+   **Frontend**
 
-*Start Frontend*
-```text
-cd Frontend
-npm run dev
-```
+   ```bash
+   git clone https://github.com/Adam99-dev/forever_clothing.git
+   cd Frontend
+   npm install
+   ```
 
-*Start Admin*
-```text
-cd Admin
-npm run dev
-```
+   **Admin**
+
+   ```bash
+   git clone https://github.com/Adam99-dev/forever_clothing.git
+   cd Admin
+   npm install
+   ```
+
+   **Desktop**
+
+   ```bash
+   git clone https://github.com/Adam99-dev/forever_clothing.git
+   cd Desktop
+   npm install
+   ```
+
+3. **Start Project**
+
+   _Start Backend_
+
+   ```bash
+   cd Backend
+   npm run s
+   ```
+
+   _Start Frontend_
+
+   ```bash
+   cd Frontend
+   npm run dev
+   ```
+
+   _Start Admin_
+
+   ```bash
+   cd Admin
+   npm run dev
+   ```
+   _Start Desktop_
+
+   ```bash
+   cd Desktop
+   npm run dist
+   ```
 
 ## 🌐 Environment Variables
+
 1. Create a `.env` file inside the **Backend** folder:
 
 - MONGODB_URI
@@ -201,10 +255,10 @@ npm run dev
 
 2. Create a `.env` file inside the **Frontend** and **Admin** folder:
 
-- backendUrl
-
+- BACKEND_URL
 
 ## 📦 Future Improvements
+
 - Wishlist feature
 - Product reviews & ratings
 - Email notifications
@@ -214,6 +268,7 @@ npm run dev
 - Admin analytics dashboard
 
 ## 🎯 Purpose of This Project
+
 - Learn full-stack MERN development
 - Build a scalable E-commerce system
 - Understand payment gateway integration
@@ -221,13 +276,16 @@ npm run dev
 - Portfolio & real-world freelance readiness
 
 ## 🤝 Contributing
+
 Contributions, issues, and feature requests are welcome.
 Feel free to fork this repository and submit a pull request.
 
 ## 📜 License
+
 This project is licensed under the MIT License.
 
 ## 🙌 Acknowledgements
+
 - React Documentation
 - Tailwind CSS
 - Stripe API Docs

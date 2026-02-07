@@ -1,65 +1,86 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import { useContext } from "react";
 import { toast } from "react-toastify";
 import { ShopContext } from "../context/ShopContext";
 
 function Login() {
   const [currentState, setCurrentState] = useState("Sign Up");
   const { token, setToken, navigate, backendUrl } = useContext(ShopContext);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    const toastId = toast.loading(
+      currentState === "Login" ? "Logging in..." : "Creating account..."
+    );
+
+    setIsLoading(true);
+
     try {
-      if (currentState === "Sign Up") {
-        const response = await axios.post(backendUrl + "/api/user/register", {
-          name,
-          email,
-          password,
+      const url =
+        currentState === "Sign Up"
+          ? "/api/user/register"
+          : "/api/user/login";
+
+      const payload =
+        currentState === "Sign Up"
+          ? { name, email, password }
+          : { email, password };
+
+      const response = await axios.post(backendUrl + url, payload);
+
+      if (response.data.success) {
+        localStorage.setItem("token", response.data.token);
+        setToken(response.data.token);
+
+        toast.update(toastId, {
+          render: "Success 🎉",
+          type: "success",
+          isLoading: false,
+          autoClose: 2000,
         });
-        if (response.data.success) {
-          localStorage.setItem("token", response.data.token);
-          setToken(response.data.token);
-        } else {
-          toast.error(response.data.message);
-        }
       } else {
-        const response = await axios.post(backendUrl + "/api/user/login", {
-          email,
-          password,
+        toast.update(toastId, {
+          render: response.data.message,
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
         });
-        if (response.data.success) {
-          localStorage.setItem("token", response.data.token);
-          setToken(response.data.token);
-        } else {
-          toast.error(response.data.message);
-        }
       }
     } catch (error) {
+      toast.update(toastId, {
+        render: "Something went wrong!",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
-  useEffect(()=>{
-    if(token){
-      navigate('/')
-    }
-  }, [token])
+
+  useEffect(() => {
+    if (token) navigate("/");
+  }, [token]);
+
   return (
     <form
-      className="flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800"
       onSubmit={submitHandler}
+      className="flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800"
     >
       <div className="inline-flex items-center gap-2 mb-2 mt-10">
         <div className="h-0.5 w-10 bg-gray-500"></div>
         <p className="prata-regular text-3xl">{currentState}</p>
         <div className="h-0.5 w-10 bg-gray-500"></div>
       </div>
-      {currentState === "Login" ? (
-        ""
-      ) : (
+
+      {currentState !== "Login" && (
         <input
           onChange={(e) => setName(e.target.value)}
           value={name}
@@ -69,6 +90,7 @@ function Login() {
           required
         />
       )}
+
       <input
         onChange={(e) => setEmail(e.target.value)}
         value={email}
@@ -77,6 +99,7 @@ function Login() {
         placeholder="Enter Email..."
         required
       />
+
       <input
         onChange={(e) => setPassword(e.target.value)}
         value={password}
@@ -85,30 +108,29 @@ function Login() {
         placeholder="Enter Password..."
         required
       />
+
       <div className="w-full flex justify-between text-sm -mt-2">
         <p className="cursor-pointer">Forgot Password ?</p>
-        {currentState === "Login" ? (
-          <p
-            className="cursor-pointer"
-            onClick={() => {
-              setCurrentState("Sign Up");
-            }}
-          >
-            Create Account
-          </p>
-        ) : (
-          <p
-            className="cursor-pointer"
-            onClick={() => {
-              setCurrentState("Login");
-            }}
-          >
-            Login Here
-          </p>
-        )}
+
+        <p
+          className="cursor-pointer"
+          onClick={() =>
+            setCurrentState(currentState === "Login" ? "Sign Up" : "Login")
+          }
+        >
+          {currentState === "Login" ? "Create Account" : "Login Here"}
+        </p>
       </div>
-      <button className="w-full p-2 bg-gray-700 text-white cursor-pointer rounded-xl">
-        {currentState}
+
+      <button
+        disabled={isLoading}
+        className={`w-full p-2 rounded-xl text-white flex items-center justify-center gap-2
+        ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-gray-700"}`}
+      >
+        {isLoading && (
+          <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+        )}
+        {isLoading ? "Please wait..." : currentState}
       </button>
     </form>
   );
