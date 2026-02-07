@@ -4,13 +4,13 @@ import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-
 const currency = "usd";
 const delivery_fee = 10;
 
 const placeOrder = async (req, res) => {
   try {
     const { userId, items, amount, address } = req.body;
+
     const orderData = {
       userId,
       items,
@@ -20,10 +20,19 @@ const placeOrder = async (req, res) => {
       payment: false,
       date: Date.now(),
     };
+
     const newOrder = new orderModel(orderData);
     await newOrder.save();
 
     await userModel.findByIdAndUpdate(userId, { cartData: {} });
+
+    // 🔔 SOCKET EVENT
+    const io = req.app.get("io");
+    io.emit("new-order", {
+      orderId: newOrder._id,
+      amount: newOrder.amount,
+      method: "COD",
+    });
 
     res.json({ success: "true", message: "Order Placed" });
   } catch (error) {
@@ -90,9 +99,15 @@ const placeOrderStripe = async (req, res) => {
 const verifyStripe = async (req, res) => {
   try {
     const { orderId, success, userId } = req.body;
+
     if (success === "true") {
       await orderModel.findByIdAndUpdate(orderId, { payment: true });
       await userModel.findByIdAndUpdate(userId, { cartData: {} });
+
+      // 🔔 SOCKET EVENT (payment confirmed)
+      const io = req.app.get("io");
+      io.emit("order-paid", { orderId });
+
       res.json({ success: "true", message: "Payment Successfull" });
     } else {
       await orderModel.findByIdAndDelete(orderId);
