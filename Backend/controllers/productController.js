@@ -66,7 +66,7 @@ const removeProduct = async (req, res) => {
 const listProduct = async (req, res) => {
   try {
     const products = await productModel
-      .find({}, { name: 1, price: 1, image: 1, bestSeller: 1, category: 1, subCategory: 1 })
+      .find({})
       .limit(30)          // 👈 important
       .lean();            // 👈 fast response
 

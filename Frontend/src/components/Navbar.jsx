@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import { assets } from "../assets/asset";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   Search,
