@@ -12,11 +12,23 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+const allowedOrigins = [
+  "https://forever-clothing-henna.vercel.app"
+];
+
 app.use(cors({
-  origin: true,
+  origin: function (origin, callback) {
+    // allow requests with no origin (Postman, server-to-server)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true
 }));
-
 const port = process.env.PORT || 5000;
 
 connectDB();
