@@ -21,7 +21,7 @@ function SearchBar() {
   return showSearch && visible ? (
     <div
       className="
-        absolute lg:mt-30
+        absolute lg:mt-40
         top-3 right-3
         sm:top-full sm:left-0 sm:right-auto
         sm:w-full sm:flex sm:justify-center

@@ -6,7 +6,7 @@ import ProductItem from "../components/ProductItem";
 import ProductItemSkeleton from "../components/ProductItemSkeleton";
 
 function Collection() {
-  const { products = [], search } = useContext(ShopContext);
+  const { products = [], search = "" } = useContext(ShopContext);
 
   const [showFilter, setShowFilter] = useState(false);
   const [genders, setGenders] = useState([]);
@@ -19,39 +19,45 @@ function Collection() {
     setter((prev) =>
       prev.includes(value)
         ? prev.filter((item) => item !== value)
-        : [...prev, value],
+        : [...prev, value]
     );
   };
 
   useEffect(() => {
     if (!products.length) {
       setFilteredProducts([]);
-      setLoading(true);
+      setLoading(false);
       return;
     }
 
     let temp = [...products];
 
-    if (genders.length)
+    /* ✅ Gender filter */
+    if (genders.length) {
       temp = temp.filter((p) =>
-        genders.includes(p?.category?.gender?.toLowerCase()),
-      );
-
-    if (subCategories.length)
-      temp = temp.filter((p) =>
-        subCategories.includes(p?.subCategory?.toLowerCase()),
-      );
-
-    if (search?.trim()) {
-      const q = search.toLowerCase();
-      temp = temp.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.category.gender.toLowerCase().includes(q) ||
-          p.subCategory.toLowerCase().includes(q),
+        genders.includes(p.category.toLowerCase())
       );
     }
 
+    /* ✅ Sub-category filter */
+    if (subCategories.length) {
+      temp = temp.filter((p) =>
+        subCategories.includes(p.subCategory.toLowerCase())
+      );
+    }
+
+    /* ✅ Search filter (SAFE) */
+    const q = search.trim().toLowerCase();
+    if (q) {
+      temp = temp.filter(
+        (p) =>
+          p?.name?.toLowerCase().includes(q) ||
+          p?.category?.gender?.toLowerCase().includes(q) ||
+          p?.subCategory?.toLowerCase().includes(q)
+      );
+    }
+
+    /* ✅ Sorting */
     if (sortType === "low-high") temp.sort((a, b) => a.price - b.price);
     if (sortType === "high-low") temp.sort((a, b) => b.price - a.price);
 
@@ -131,7 +137,7 @@ function Collection() {
             <Title
               text1="ALL"
               text2="COLLECTIONS"
-              description={"CHECK OUT ALL THE COLLECTION AVAILABLE"}
+              description="CHECK OUT ALL THE COLLECTION AVAILABLE"
             />
           </div>
 
