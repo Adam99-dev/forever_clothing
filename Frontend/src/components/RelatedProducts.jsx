@@ -14,12 +14,9 @@ function RelatedProducts({ category, subCategory }) {
 
     setLoader(true);
 
-    const filteredProducts = products.filter(
-      (item) =>
-        item?.category?.gender === category?.gender &&
-        item?.category?.season === category?.season &&
-        item?.subCategory === subCategory
-    );
+    const filteredProducts = products
+      .filter((p) => p.category === category && p.subCategory === subCategory)
+      .slice(0, 20);
 
     setRelated(filteredProducts.slice(0, 5));
     setLoader(false);
