@@ -7,14 +7,14 @@ import { Package } from "lucide-react";
 function Orders({ token }) {
   const [orders, setOrders] = useState([]);
 
-  const fetchAllOrders = async () => {
+  const fetchAllOrders = async (req, res) => {
     if (!token) return;
 
     try {
       const response = await axios.post(
         backendUrl + "/api/order/list",
         {},
-        { headers: { token } },
+        { headers: { token: token.trim() } },
       );
       console.log("PROD RESPONSE:", response.data);
 
