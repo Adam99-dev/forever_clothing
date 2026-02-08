@@ -15,8 +15,9 @@ import orderRouter from "./routes/orderRoute.js";
 dotenv.config();
 
 const app = express();
-const server = http.createServer(app); // 👈 IMPORTANT
+const server = http.createServer(app);
 
+// ---------------- MIDDLEWARE ----------------
 app.use(express.json());
 
 const allowedOrigins = [
@@ -25,26 +26,33 @@ const allowedOrigins = [
   "http://localhost:5174",
 ];
 
-// REST API CORS
+// 🔐 REST API CORS (FIXED)
 app.use(
   cors({
-    origin: function (origin, callback) {
+    origin: (origin, callback) => {
+      // Allow server-to-server, Postman, Electron
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
+        return callback(null, true);
       }
+
+      return callback(new Error("Not allowed by CORS"));
     },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "token"],
     credentials: true,
   })
 );
 
-// 🔌 SOCKET.IO SETUP
+// 🔥 REQUIRED: handle preflight requests
+app.options("*", cors());
+
+// ---------------- SOCKET.IO ----------------
 const io = new Server(server, {
   cors: {
-    origin: "*", // Electron has no origin
+    origin: "*", // Electron / Admin app
+    methods: ["GET", "POST"],
   },
 });
 
@@ -52,14 +60,13 @@ io.on("connection", (socket) => {
   console.log("🟢 Socket connected:", socket.id);
 });
 
-// Make io accessible in routes/controllers
+// Make io accessible inside controllers
 app.set("io", io);
 
-const port = process.env.PORT || 5000;
-
+// ---------------- DATABASE ----------------
 connectDB();
 
-// Routes
+// ---------------- ROUTES ----------------
 app.use("/api/user", userRouter);
 app.use("/api/product", productRouter);
 app.use("/api/cart", cartRouter);
@@ -69,7 +76,9 @@ app.get("/", (req, res) => {
   res.send("API IS WORKING!");
 });
 
-// 👇 IMPORTANT: use server.listen NOT app.listen
+// ---------------- SERVER ----------------
+const port = process.env.PORT || 5000;
+
 server.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
 });
