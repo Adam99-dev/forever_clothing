@@ -3,17 +3,13 @@ const path = require("path");
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1300,
+    width: 1200,
     height: 800,
-    autoHideMenuBar: true,
-    icon: path.join(__dirname, "assets/icon.ico"),
+    autoHideMenuBar: true, // removes top menu/header
+    icon: path.join(__dirname, "./assets/icon.ico"), // app icon
   });
 
-  const indexPath = app.isPackaged
-    ? path.join(process.resourcesPath, "Admin/dist/index.html")
-    : path.join(__dirname, "../Admin/dist/index.html");
-
-  win.loadFile(indexPath);
+  win.loadFile(path.join(__dirname, "../Admin/dist/index.html"));
 }
 
 app.whenReady().then(createWindow);

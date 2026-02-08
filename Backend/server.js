@@ -21,6 +21,7 @@ const allowedOrigins = [
   "https://forever-clothing-henna.vercel.app",
   "http://localhost:5173",
   "http://localhost:5174",
+  "https://forever-clothing-admin-seven.vercel.app",
 ];
 
 // ✅ FIXED PREFLIGHT (modern Express)
