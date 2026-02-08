@@ -16,6 +16,7 @@ function Orders({ token }) {
         {},
         { headers: { token } },
       );
+      console.log("PROD RESPONSE:", response.data);
 
       if (response.data.success) {
         setOrders(response.data.orders);
@@ -117,7 +118,10 @@ function Orders({ token }) {
 
               {/* Status Dropdown */}
               <div className="flex items-center">
-                <select onChange={(e)=>{statusHandler(e, order._id)}}
+                <select
+                  onChange={(e) => {
+                    statusHandler(e, order._id);
+                  }}
                   className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
                   value={order.status}
                 >
