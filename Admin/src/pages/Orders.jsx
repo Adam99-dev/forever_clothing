@@ -14,19 +14,19 @@ function Orders({ token }) {
     try {
       setLoading(true);
 
-      const response = await axios.post(
+      const { data } = await axios.post(
         backendUrl + "/api/order/list",
         {},
-        { headers: { token } },
+        { headers: { token } }
       );
 
-      if (response.data.success) {
-        setOrders(response.data.orders);
+      if (data.success) {
+        setOrders(data.orders || []);
       } else {
-        toast.error(response.data.message || "Failed to fetch orders");
+        toast.error(data.message || "Failed to fetch orders");
       }
     } catch (error) {
-      toast.error(error.message || "An error occurred");
+      toast.error(error.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -34,16 +34,14 @@ function Orders({ token }) {
 
   const statusHandler = async (e, orderId) => {
     try {
-      const response = await axios.post(
+      const { data } = await axios.post(
         backendUrl + "/api/order/update",
         { orderId, status: e.target.value },
-        { headers: { token } },
+        { headers: { token } }
       );
-      if (response.data.success) {
-        await fetchAllOrders();
-      }
+
+      if (data.success) fetchAllOrders();
     } catch (error) {
-      console.log(error);
       toast.error(error.message);
     }
   };
@@ -63,26 +61,13 @@ function Orders({ token }) {
               key={i}
               className="animate-pulse bg-white rounded-lg shadow-md p-5 flex flex-col lg:flex-row gap-6"
             >
-              {/* Icon */}
-              <div className="h-7 w-7 bg-gray-300 rounded"></div>
-
-              {/* Details */}
+              <div className="h-7 w-7 bg-gray-300 rounded" />
               <div className="flex-1 space-y-2">
-                <div className="h-4 w-3/4 bg-gray-300 rounded"></div>
-                <div className="h-3 w-1/3 bg-gray-300 rounded"></div>
-                <div className="h-3 w-1/2 bg-gray-300 rounded"></div>
-
-                <div className="space-y-1">
-                  <div className="h-3 w-2/3 bg-gray-300 rounded"></div>
-                  <div className="h-3 w-1/2 bg-gray-300 rounded"></div>
-                  <div className="h-3 w-1/3 bg-gray-300 rounded"></div>
-                </div>
-
-                <div className="h-4 w-32 bg-gray-300 rounded"></div>
+                <div className="h-4 w-3/4 bg-gray-300 rounded" />
+                <div className="h-3 w-1/2 bg-gray-300 rounded" />
+                <div className="h-3 w-1/3 bg-gray-300 rounded" />
               </div>
-
-              {/* Status */}
-              <div className="h-10 w-40 bg-gray-300 rounded-md"></div>
+              <div className="h-10 w-40 bg-gray-300 rounded-md" />
             </div>
           ))}
         </div>
@@ -90,73 +75,73 @@ function Orders({ token }) {
         <p className="text-gray-500">No orders found.</p>
       ) : (
         <div className="space-y-6">
-          {orders.map((order, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg shadow-md p-5 flex flex-col lg:flex-row gap-6"
-            >
-              {/* Icon */}
-              <div className="flex items-start">
+          {orders.map((order) => {
+            const items = Array.isArray(order.items) ? order.items : [];
+
+            return (
+              <div
+                key={order._id}
+                className="bg-white rounded-lg shadow-md p-5 flex flex-col lg:flex-row gap-6"
+              >
+                {/* Icon */}
                 <Package className="text-gray-700" size={28} />
-              </div>
 
-              {/* Order Details */}
-              <div className="flex-1 text-sm text-gray-700 space-y-1">
-                <p className="font-medium">
-                  {order.items.map((item, i) => (
-                    <span key={i}>
-                      {item.name} × {item.quantity}
-                      {item.size && ` (${item.size})`}
-                      {i < order.items.length - 1 ? ", " : ""}
-                    </span>
-                  ))}
-                </p>
-
-                <p className="text-xs text-gray-500">Order ID: {order._id}</p>
-
-                <p>
-                  <span className="font-medium">Name:</span>{" "}
-                  {order.address.firstName} {order.address.lastName}
-                </p>
-
-                <div className="text-gray-600">
-                  <p>{order.address.street}</p>
-                  <p>
-                    {order.address.city}, {order.address.state},{" "}
-                    {order.address.country}
+                {/* Order Details */}
+                <div className="flex-1 text-sm text-gray-700 space-y-1">
+                  <p className="font-medium">
+                    {items.map((item, i) => (
+                      <span key={i}>
+                        {item.name} × {item.quantity}
+                        {item.size && ` (${item.size})`}
+                        {i < items.length - 1 ? ", " : ""}
+                      </span>
+                    ))}
                   </p>
-                  <p>{order.address.pincode}</p>
-                  <p>Phone: {order.address.phone}</p>
+
+                  <p className="text-xs text-gray-500">
+                    Order ID: {order._id}
+                  </p>
+
+                  <p>
+                    <span className="font-medium">Name:</span>{" "}
+                    {order.address.firstName} {order.address.lastName}
+                  </p>
+
+                  <div className="text-gray-600">
+                    <p>{order.address.street}</p>
+                    <p>
+                      {order.address.city}, {order.address.state},{" "}
+                      {order.address.country}
+                    </p>
+                    <p>{order.address.pincode}</p>
+                    <p>Phone: {order.address.phone}</p>
+                  </div>
+
+                  <p>Email: {order.address.email}</p>
+                  <p>Payment Method: {order.paymentMethod}</p>
+                  <p>Items: {items.length}</p>
+
+                  <p
+                    className={`font-medium ${
+                      order.payment ? "text-green-600" : "text-red-500"
+                    }`}
+                  >
+                    {order.payment ? "Paid" : "Not Paid"}
+                  </p>
+
+                  <p>Date: {new Date(order.date).toLocaleDateString()}</p>
+
+                  <p className="font-semibold">
+                    Amount: {currency}
+                    {order.amount}
+                  </p>
                 </div>
 
-                <p>Email: {order.address.email}</p>
-                <p>Payment Method: {order.paymentMethod}</p>
-                <p>Items: {order.items.length}</p>
-
-                <p
-                  className={`font-medium ${
-                    order.payment ? "text-green-600" : "text-red-500"
-                  }`}
-                >
-                  {order.payment ? "Paid" : "Not Paid"}
-                </p>
-
-                <p>Date: {new Date(order.date).toLocaleDateString()}</p>
-
-                <p className="font-semibold">
-                  Amount: {currency}
-                  {order.amount}
-                </p>
-              </div>
-
-              {/* Status Dropdown */}
-              <div className="flex items-center">
+                {/* Status */}
                 <select
-                  onChange={(e) => {
-                    statusHandler(e, order._id);
-                  }}
-                  className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
                   value={order.status}
+                  onChange={(e) => statusHandler(e, order._id)}
+                  className="border rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-black"
                 >
                   <option>Order Placed</option>
                   <option>Processing</option>
@@ -165,8 +150,8 @@ function Orders({ token }) {
                   <option>Cancelled</option>
                 </select>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
