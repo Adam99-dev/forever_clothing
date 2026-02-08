@@ -26,14 +26,6 @@ const placeOrder = async (req, res) => {
 
     await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
-    // 🔔 SOCKET EVENT
-    const io = req.app.get("io");
-    io.emit("new-order", {
-      orderId: newOrder._id,
-      amount: newOrder.amount,
-      method: "COD",
-    });
-
     res.json({ success: "true", message: "Order Placed" });
   } catch (error) {
     console.log(error);
@@ -103,10 +95,6 @@ const verifyStripe = async (req, res) => {
     if (success === "true") {
       await orderModel.findByIdAndUpdate(orderId, { payment: true });
       await userModel.findByIdAndUpdate(userId, { cartData: {} });
-
-      // 🔔 SOCKET EVENT (payment confirmed)
-      const io = req.app.get("io");
-      io.emit("order-paid", { orderId });
 
       res.json({ success: "true", message: "Payment Successfull" });
     } else {
