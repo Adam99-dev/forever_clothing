@@ -22,6 +22,7 @@ app.use(express.json());
 const allowedOrigins = [
   "https://forever-clothing-henna.vercel.app",
   "http://localhost:5173",
+  "http://localhost:5174",
 ];
 
 // REST API CORS
